@@ -5,7 +5,7 @@ import pygame
 pygame.init()
 
 #set up the drawing window
-screen = pygame.dicplay.set_mode([500, 500])
+screen = pygame.display.set_mode([500, 500])
 
 # run until the user asks to quit
 running = True
