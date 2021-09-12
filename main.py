@@ -17,6 +17,9 @@ from pygame.locals import(
     QUIT,
 )
 
+#setup for sounds. Defaults are good
+pygame.mixer.init()
+
 # initialize pygame.
 pygame.init()
 
@@ -36,8 +39,10 @@ class Player(pygame.sprite.Sprite):
     def update(self, pressed_keys):
         if pressed_keys[K_UP]:
             self.rect.move_ip(0, -3)
+            move_up_sound.play()
         if pressed_keys[K_DOWN]:
             self.rect.move_ip(0, 3)
+            move_down_sound.play()
         if pressed_keys[K_LEFT]:
             self.rect.move_ip(-3, 0)
         if pressed_keys[K_RIGHT]:
@@ -102,6 +107,9 @@ pygame.time.set_timer(ADDENEMY, 1000)
 ADDCLOUD = pygame.USEREVENT + 2
 pygame.time.set_timer(ADDCLOUD, 3000)
 
+# Setup the clock for a decent framerate
+clock = pygame.time.Clock()
+
 #Initialize player. Right now, this is just a rectangle.
 player = Player()
 
@@ -118,6 +126,15 @@ all_sprites.add(player)
 
 # variable to keep the main loop running.
 running = True
+
+# Load and play Background music
+pygame.mixer.music.load("./music/loop.ogg")
+pygame.mixer.music.play(loops = -1)
+
+#load all sound effect
+move_up_sound = pygame.mixer.Sound("./music/up.ogg")
+move_down_sound = pygame.mixer.Sound("./music/down.ogg")
+collision_sound = pygame.mixer.Sound("./music/collide.ogg")
 
 # THE GREAT GAME LOOP
 while running:
@@ -166,10 +183,20 @@ while running:
     if pygame.sprite.spritecollideany(player, enemies):
         #if so, then remove the player and stop the loop
         player.kill()
+
+        move_up_sound.stop()
+        move_down_sound.stop()
+        collision_sound.play()
         running = False
 
     # Update the display.
     pygame.display.flip()
 
+    # Ensure program maintains a rate of 30 frames per second
+    #clock.tick(30)
+
+# all done
+pygame.mixer.music.stop()
+pygame.mixer.quit()
 pygame.quit()
 
